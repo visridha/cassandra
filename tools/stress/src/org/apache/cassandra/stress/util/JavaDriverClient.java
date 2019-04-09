@@ -261,7 +261,8 @@ public class JavaDriverClient
     
     private class CustomRetryPolicy implements RetryPolicy
     {
-
+    	private Pattern pattern = Pattern.compile(".*RetryAfterMs=([\\d+|\\.]+),.*");
+    	
 		@Override
 		public void close() {
 		}
@@ -285,8 +286,7 @@ public class JavaDriverClient
 	        try {
 	            if (arg2 instanceof OverloadedException) {
 	            	String exceptionMessage = arg2.getMessage();
-	            	Pattern pattern = Pattern.compile(".*RetryAfterMs=([\\d+|\\.]+),.*");
-	            	Matcher matcher = pattern.matcher(exceptionMessage);
+	            	Matcher matcher = this.pattern.matcher(exceptionMessage);
 	            	double retryAfterMilliseconds = -1;
 	            	if (matcher.matches())
 	            	{
@@ -328,9 +328,9 @@ public class JavaDriverClient
             	{
             		retryAfterInterval = (long)retryAfterMilliseconds;
             	}
-            	
+
+                System.out.printf("%n Retrying attempt: %d with retryAfter %d%n", retryNumber, retryAfterInterval);
                 Thread.sleep(retryAfterInterval);
-                System.out.printf("Retrying attempt: %n", retryNumber);
                 retryDecision = RetryDecision.retry(cl);
             } else {
                 retryDecision = RetryDecision.rethrow();

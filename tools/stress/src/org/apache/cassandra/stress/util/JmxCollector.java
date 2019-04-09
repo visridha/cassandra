@@ -78,12 +78,12 @@ public class JmxCollector implements Callable<JmxCollector.GcStats>
     // TODO: should expand to whole cluster
     public JmxCollector(Collection<String> hosts, int port)
     {
-        probes = new NodeProbe[hosts.size()];
+        probes = new NodeProbe[0];
         int i = 0;
         for (String host : hosts)
         {
-            probes[i] = connect(host, port);
-            probes[i].getAndResetGCStats();
+            // probes[i] = connect(host, port);
+            // probes[i].getAndResetGCStats();
             i++;
         }
     }

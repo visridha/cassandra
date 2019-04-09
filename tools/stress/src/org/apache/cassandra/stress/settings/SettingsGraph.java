@@ -57,6 +57,7 @@ public class SettingsGraph implements Serializable
             try
             {
                 temporaryLogFile = File.createTempFile("cassandra-stress", ".log");
+            	System.out.printf("Setting stats into stats from %s", temporaryLogFile.getPath());
             }
             catch (IOException e)
             {

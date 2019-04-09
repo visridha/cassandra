@@ -135,7 +135,7 @@ public class StressGraph
             String line;
             while ((line = reader.readLine()) != null)
             {
-                // Detect if we are running multiple thread counts:
+            	// Detect if we are running multiple thread counts:
                 if (line.startsWith("Thread count was not specified"))
                     runningMultipleThreadCounts = true;
 
@@ -152,12 +152,12 @@ public class StressGraph
                 // Detect mode changes
                 if (line.equals(StressMetrics.HEAD))
                 {
-                    mode = ReadingMode.METRICS;
+                	mode = ReadingMode.METRICS;
                     continue;
                 }
                 else if (line.equals("Results:"))
                 {
-                    mode = ReadingMode.AGGREGATES;
+                	mode = ReadingMode.AGGREGATES;
                     continue;
                 }
                 else if (mode == ReadingMode.AGGREGATES && line.equals(""))
@@ -166,7 +166,7 @@ public class StressGraph
                 }
                 else if (line.equals("END") || line.equals("FAILURE"))
                 {
-                    break;
+                	break;
                 }
 
                 // Process lines
@@ -174,9 +174,10 @@ public class StressGraph
                 {
                     JSONArray metrics = new JSONArray();
                     String[] parts = line.split(",");
-                    if (parts.length != StressMetrics.HEADMETRICS.length)
+
+                	if (parts.length != StressMetrics.HEADMETRICS.length)
                     {
-                        continue;
+                    	continue;
                     }
                     for (String m : parts)
                     {
@@ -196,8 +197,9 @@ public class StressGraph
                     String[] parts = line.split(":",2);
                     if (parts.length != 2)
                     {
-                        continue;
+                    	continue;
                     }
+                    
                     // the graphing js expects lower case names
                     json.put(parts[0].trim().toLowerCase(), parts[1].trim());
                 }
@@ -227,12 +229,13 @@ public class StressGraph
             throw new RuntimeException("Couldn't read from temporary stress log file");
         }
         if (json.size() != 0) stats.add(json);
+        
         return stats;
     }
 
     private JSONObject createJSONStats(JSONObject json)
     {
-        try (InputStream logStream = Files.newInputStream(stressSettings.graph.temporaryLogFile.toPath()))
+    	try (InputStream logStream = Files.newInputStream(stressSettings.graph.temporaryLogFile.toPath()))
         {
             JSONArray stats;
             if (json == null)
@@ -249,6 +252,8 @@ public class StressGraph
 
             json.put("title", stressSettings.graph.title);
             json.put("stats", stats);
+
+            System.out.printf("\n\nJson stats after '%s'\n", json.toJSONString());
             return json;
         }
         catch (IOException e)
